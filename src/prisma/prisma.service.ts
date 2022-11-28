@@ -7,7 +7,7 @@ export class PrismaService extends PrismaClient {
     super({
       datasources: {
         db: {
-          url: "DATABASE_URL",
+          url: "postgresql://postgres:123456@localhost:5434/crud_nestjs_teste_db?connect_timeout=300",
         },
       },
     });
