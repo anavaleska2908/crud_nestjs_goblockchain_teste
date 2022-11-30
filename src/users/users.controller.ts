@@ -1,15 +1,13 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
+import { Body, Controller, Get, Patch, Post, UseGuards } from "@nestjs/common";
 import { User } from "@prisma/client";
-import { Request } from "express";
-import { JwtGuard } from "src/auth/guard";
+import { JwtGuard } from "../auth/guard";
 import { GetUser } from "./decorator";
 import { CreateUserDto } from "./dto";
-import { UserService } from "./user.service";
+import { UsersService } from "./users.service";
 
 @Controller("/users")
-export class UserController {
-  constructor(private userService: UserService) {}
+export class UsersController {
+  constructor(private userService: UsersService) {}
 
   @Post("")
   store(@Body() dto: CreateUserDto) {

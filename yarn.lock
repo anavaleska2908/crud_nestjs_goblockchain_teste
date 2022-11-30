@@ -2791,10 +2791,12 @@ __metadata:
     class-transformer: ^0.5.1
     class-validator: ^0.13.2
     dotenv: ^16.0.3
+    dotenv-cli: ^6.0.0
     eslint: ^8.0.1
     eslint-config-prettier: ^8.3.0
     eslint-plugin-prettier: ^4.0.0
     jest: 28.1.3
+    jest-mock-extended: 2.0.4
     passport: ^0.6.0
     passport-jwt: ^4.0.0
     prettier: ^2.3.2
@@ -2955,7 +2957,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv-expand@npm:8.0.3":
+"dotenv-cli@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "dotenv-cli@npm:6.0.0"
+  dependencies:
+    cross-spawn: ^7.0.3
+    dotenv: ^16.0.0
+    dotenv-expand: ^8.0.1
+    minimist: ^1.2.5
+  bin:
+    dotenv: cli.js
+  checksum: 3db5a363eedd24d428001a956d9b8c72094983bfe0e0e722cda7803b614daf85dde9c9beb5d9fa28a139a5c594533ecd8f9d8430a90c244175e81c9a40abc5b1
+  languageName: node
+  linkType: hard
+
+"dotenv-expand@npm:8.0.3, dotenv-expand@npm:^8.0.1":
   version: 8.0.3
   resolution: "dotenv-expand@npm:8.0.3"
   checksum: 128ce90ac825b543de3ece0154a51b056ab0dc36bb26d97a68cd0b8707327ecd3c182fb6ac63b26a0fcdfa85064419906a1065cb634f1f9dc08ad311375f1fc0
@@ -2969,7 +2985,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^16.0.3":
+"dotenv@npm:^16.0.0, dotenv@npm:^16.0.3":
   version: 16.0.3
   resolution: "dotenv@npm:16.0.3"
   checksum: afcf03f373d7a6d62c7e9afea6328e62851d627a4e73f2e12d0a8deae1cd375892004f3021883f8aec85932cd2834b091f568ced92b4774625b321db83b827f8
@@ -4518,6 +4534,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jest-mock-extended@npm:2.0.4":
+  version: 2.0.4
+  resolution: "jest-mock-extended@npm:2.0.4"
+  dependencies:
+    ts-essentials: ^7.0.3
+  peerDependencies:
+    jest: ^24.0.0 || ^25.0.0 || ^26.0.0 || ^27.0.0
+    typescript: ^3.0.0 || ^4.0.0
+  checksum: 0e3b6ecbb0a41a4a7a45ae48ff9c42d43febd19eaf3d97a975010597ca6c6fdfaa89949b898e98e05689de32abfe6adc5ca32c253ac5b46718a0d4f49fcbb141
+  languageName: node
+  linkType: hard
+
 "jest-mock@npm:^28.1.3":
   version: 28.1.3
   resolution: "jest-mock@npm:28.1.3"
@@ -5235,7 +5263,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.2.6":
+"minimist@npm:^1.2.5, minimist@npm:^1.2.6":
   version: 1.2.7
   resolution: "minimist@npm:1.2.7"
   checksum: 7346574a1038ca23c32e02252f603801f09384dd1d78b69a943a4e8c2c28730b80e96193882d3d3b22a063445f460e48316b29b8a25addca2d7e5e8f75478bec
@@ -6776,6 +6804,15 @@ __metadata:
   bin:
     tree-kill: cli.js
   checksum: 49117f5f410d19c84b0464d29afb9642c863bc5ba40fcb9a245d474c6d5cc64d1b177a6e6713129eb346b40aebb9d4631d967517f9fbe8251c35b21b13cd96c7
+  languageName: node
+  linkType: hard
+
+"ts-essentials@npm:^7.0.3":
+  version: 7.0.3
+  resolution: "ts-essentials@npm:7.0.3"
+  peerDependencies:
+    typescript: ">=3.7.0"
+  checksum: 74d75868acf7f8b95e447d8b3b7442ca21738c6894e576df9917a352423fde5eb43c5651da5f78997da6061458160ae1f6b279150b42f47ccc58b73e55acaa2f
   languageName: node
   linkType: hard
 

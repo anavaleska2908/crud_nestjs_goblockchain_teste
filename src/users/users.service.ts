@@ -1,11 +1,11 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import * as argon2 from "argon2";
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaService } from "../prisma/prisma.service";
 import { CreateUserDto } from "./dto";
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(private prisma: PrismaService) {}
   async store(dto: CreateUserDto) {
     try {
