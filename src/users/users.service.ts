@@ -1,5 +1,8 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import * as argon2 from "argon2";
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateUserDto, UpdateUserDto } from "./dto";
@@ -8,33 +11,32 @@ import { CreateUserDto, UpdateUserDto } from "./dto";
 export class UsersService {
   constructor(private prisma: PrismaService) {}
   async store(dto: CreateUserDto) {
-    try {
-      const user = await this.prisma.user.create({
-        data: {
-          name: dto.name,
-          email: dto.email,
-          password: await argon2.hash(dto.password),
-        },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      });
+    const checkUserExists = await this.prisma.user.findFirst({
+      where: {
+        email: dto.email,
+      },
+    });
 
-      return user;
-    } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === "P2002") {
-          throw new ForbiddenException(
-            "A account with this Email already exists.",
-          );
-        }
-      }
-      throw error;
+    if (checkUserExists) {
+      throw new ConflictException("A account with this Email already exists.");
     }
+
+    const user = await this.prisma.user.create({
+      data: {
+        name: dto.name,
+        email: dto.email,
+        password: await argon2.hash(dto.password),
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return user;
   }
 
   async index() {
@@ -57,13 +59,27 @@ export class UsersService {
       },
     });
 
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
     return user;
   }
 
   async update(userId: string, dto: UpdateUserDto) {
-    const user = await this.prisma.user.update({
+    const user = await this.prisma.user.findFirst({
       where: {
         id: userId["id"],
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    const userUpdated = await this.prisma.user.update({
+      where: {
+        id: user.id,
       },
       data: {
         ...dto,
@@ -77,13 +93,23 @@ export class UsersService {
       },
     });
 
-    return user;
+    return userUpdated;
   }
 
   async delete(userId: string) {
-    await this.prisma.user.delete({
+    const user = await this.prisma.user.findFirst({
       where: {
         id: userId["id"],
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    await this.prisma.user.delete({
+      where: {
+        id: user.id,
       },
     });
 

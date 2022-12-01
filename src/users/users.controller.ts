@@ -8,41 +8,39 @@ import {
   Post,
   UseGuards,
 } from "@nestjs/common";
-import { User } from "@prisma/client";
 import { JwtGuard } from "../auth/guard";
-import { GetUser } from "./decorator";
 import { CreateUserDto, UpdateUserDto } from "./dto";
 import { UsersService } from "./users.service";
 
 @Controller("/users")
 export class UsersController {
-  constructor(private userService: UsersService) {}
+  constructor(private usersService: UsersService) {}
 
   @Post("")
   store(@Body() dto: CreateUserDto) {
-    return this.userService.store(dto);
+    return this.usersService.store(dto);
   }
 
   @Get("")
   index() {
-    return this.userService.index();
+    return this.usersService.index();
   }
 
   @UseGuards(JwtGuard)
   @Get(":id")
   show(@Param() userId: string) {
-    return this.userService.show(userId);
+    return this.usersService.show(userId);
   }
 
   @UseGuards(JwtGuard)
   @Patch(":id")
   update(@Param() userId: string, @Body() dto: UpdateUserDto) {
-    return this.userService.update(userId, dto);
+    return this.usersService.update(userId, dto);
   }
 
   @UseGuards(JwtGuard)
   @Delete(":id")
   delete(@Param() userId: string) {
-    return this.userService.delete(userId);
+    return this.usersService.delete(userId);
   }
 }
