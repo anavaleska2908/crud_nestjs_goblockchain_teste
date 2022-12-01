@@ -3,12 +3,7 @@ import { UsersService } from "../users.service";
 import { UsersController } from "../users.controller";
 import { PrismaService } from "src/prisma/prisma.service";
 
-const mockUserClient = () => ({
-  createUser: jest.fn(),
-  findUser: jest.fn(),
-  update: jest.fn(),
-  delete: jest.fn(),
-});
+const mockUsersService = {};
 
 describe("UsersController", () => {
   let userClient: PrismaService;
@@ -18,7 +13,10 @@ describe("UsersController", () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
       providers: [UsersService],
-    }).compile();
+    })
+      .overrideProvider(UsersService)
+      .useValue(mockUsersService)
+      .compile();
 
     controller = module.get<UsersController>(UsersController);
   });
