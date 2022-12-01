@@ -15,9 +15,14 @@ export class UsersService {
           email: dto.email,
           password: await argon2.hash(dto.password),
         },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       });
-
-      delete user.password;
 
       return user;
     } catch (error) {
@@ -32,18 +37,56 @@ export class UsersService {
     }
   }
 
+  async index() {
+    const users = await this.prisma.user.findMany();
+
+    return users;
+  }
+
+  async show(userId: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: userId["id"],
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return user;
+  }
+
   async update(userId: string, dto: UpdateUserDto) {
     const user = await this.prisma.user.update({
       where: {
-        id: userId,
+        id: userId["id"],
       },
       data: {
         ...dto,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
-    delete user.password;
-
     return user;
+  }
+
+  async delete(userId: string) {
+    await this.prisma.user.delete({
+      where: {
+        id: userId["id"],
+      },
+    });
+
+    return { msg: "This user has been successfully deleted." };
   }
 }
