@@ -91,7 +91,6 @@ describe("UsersController", () => {
         "d081490a-45ae-493f-a739-bb4ef86fddec",
       );
 
-      expect(response).toBeUndefined();
       expect(mockUsersService.delete).toHaveBeenCalledTimes(1);
     });
   });

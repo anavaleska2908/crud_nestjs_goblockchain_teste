@@ -4,7 +4,7 @@ import * as request from "supertest";
 import { AppModule } from "./../src/app.module";
 import { PrismaService } from "../src/prisma/prisma.service";
 import { AuthDto } from "src/auth/dto";
-import { CreateUserDto } from "src/users/dto";
+import { CreateUserDto, UpdateUserDto } from "src/users/dto";
 
 describe("AppController (e2e)", () => {
   let app: INestApplication;
@@ -14,6 +14,10 @@ describe("AppController (e2e)", () => {
     name: "Jane Doe",
     email: "janedoe@email.com",
     password: "123456",
+  };
+  const userUpdated: UpdateUserDto = {
+    name: "Jane Doe Updated",
+    email: "janedoeupdated@email.com",
   };
   const userLogin: AuthDto = {
     email: "janedoe@email.com",
@@ -47,7 +51,7 @@ describe("AppController (e2e)", () => {
     app.close();
   });
 
-  describe("Users", () => {
+  describe("Users and Login routes", () => {
     it("Should be able to create a user and log in", async () => {
       const response = await request(httpServer).post("/users").send(user);
       const loginResponse = await request(httpServer)
@@ -62,6 +66,13 @@ describe("AppController (e2e)", () => {
       expect(loginResponse.status).toBe(200);
       expect(loginResponse.body).toHaveProperty("access_token");
     });
+
+    it("Should be able to get all users", async () => {
+      const response = await request(httpServer).get("/users");
+
+      expect(response.status).toBe(200);
+    });
+
     it("Should be able to get a user by id", async () => {
       const response = await request(httpServer)
         .get(`/users/${userId}`)
@@ -70,7 +81,24 @@ describe("AppController (e2e)", () => {
       expect(response.status).toBe(200);
     });
 
-    //   describe("Update a user", () => {});
-    //   describe("Delete a user", () => {});
+    it("Update a user", async () => {
+      const response = await request(httpServer)
+        .patch(`/users/${userId}`)
+        .set("Authorization", `Bearer ${token}`)
+        .send(userUpdated);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(userUpdated);
+    });
+    it("Delete a user", async () => {
+      const response = await request(httpServer)
+        .delete(`/users/${userId}`)
+        .set("Authorization", `Bearer ${token}`);
+
+      expect(response.status).toBe(204);
+      expect(response.body).toEqual({
+        msg: "This user has been successfully deleted.",
+      });
+    });
   });
 });
