@@ -7,6 +7,7 @@ import { ConflictException, NotFoundException } from "@nestjs/common";
 const mockUsersService = {
   user: {
     create: jest.fn(),
+    findUnique: jest.fn(),
     findMany: jest.fn(),
     findFirst: jest.fn(),
     update: jest.fn(),
@@ -43,8 +44,8 @@ describe("UserService", () => {
   });
 
   describe("CreateUser", () => {
-    it("Should be able to create a user", async () => {
-      const user = TestUtil.giveAMeAValidUser();
+    it("Should be able to create a new user", async () => {
+      const user = await TestUtil.giveAMeAValidUser();
       mockUsersService.user.create.mockReturnValue(user);
       const response = await service.store(user);
 
@@ -52,9 +53,9 @@ describe("UserService", () => {
       expect(mockUsersService.user.create).toBeCalledTimes(1);
     });
 
-    it("Should return a exception when a user already been created", async () => {
-      const user = TestUtil.giveAMeAValidUser();
-      const user2 = TestUtil.giveAMeAValidUser();
+    it("Should return a exception when the user is already registered", async () => {
+      const user = await TestUtil.giveAMeAValidUser();
+      const user2 = await TestUtil.giveAMeAValidUser();
       mockUsersService.user.create.mockReturnValue(user);
       mockUsersService.user.create.mockReturnValue(user2);
 
@@ -82,7 +83,7 @@ describe("UserService", () => {
 
   describe("ListOneUser", () => {
     it("Should be able to list a user by id", async () => {
-      const user = TestUtil.giveAMeAValidUser();
+      const user = await TestUtil.giveAMeAValidUser();
       mockUsersService.user.findFirst.mockReturnValue(user);
       const response = await service.show(
         "d081490a-45ae-493f-a739-bb4ef86fddec",
@@ -103,7 +104,7 @@ describe("UserService", () => {
 
   describe("UpdateUser", () => {
     it("Should be able to update a user", async () => {
-      const user = TestUtil.giveAMeAValidUser();
+      const user = await TestUtil.giveAMeAValidUser();
       const updatedUser = { name: "Updated Name" };
       mockUsersService.user.findFirst.mockReturnValue(user);
       mockUsersService.user.update.mockReturnValue({
@@ -133,13 +134,13 @@ describe("UserService", () => {
 
   describe("DeleteUser", () => {
     it("Should be able to delete a user", async () => {
-      const user = TestUtil.giveAMeAValidUser();
+      const user = await TestUtil.giveAMeAValidUser();
       mockUsersService.user.findFirst.mockReturnValue(user);
       mockUsersService.user.delete.mockReturnValue(user);
       const response = await service.delete(
         "d081490a-45ae-493f-a739-bb4ef86fddec",
       );
-
+      console.log("service", response);
       expect(response).toEqual({
         msg: "This user has been successfully deleted.",
       });

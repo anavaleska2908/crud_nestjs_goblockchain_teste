@@ -18,6 +18,7 @@ export class AuthService {
         email: dto.email,
       },
     });
+    console.log("user", user);
 
     if (!user) throw new ForbiddenException("Email or password is incorrect.");
 

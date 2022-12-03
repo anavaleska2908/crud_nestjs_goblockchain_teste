@@ -1,17 +1,35 @@
-import { CreateUserDto, UpdateUserDto } from "../../users/dto/user.dto";
+import { AuthDto } from "../../auth/dto";
+import * as argon2 from "argon2";
+import { CreateUserDto } from "../../users/dto/user.dto";
 
 export class TestUtil {
-  static giveAMeAValidUser(): CreateUserDto {
+  static async giveAMeAValidUser(): Promise<CreateUserDto> {
     const user = new CreateUserDto();
-    const id = "d081490a-45ae-493f-a739-bb4ef86fddec";
     user.email = "janedoe@email.com";
     user.name = "Jane Doe";
-    user.password =
-      "$argon2id$v=19$m=65536,t=3,p=4$2ZFTwbADUVbHI5Cv3dEUoA$fX2vNyZgYQ1eiZVBMUHG38yXxQuuV4kSImDqiiyXs5E";
-    const newUser = {
-      ...user,
-      id,
-    };
-    return newUser;
+    user.password = await argon2.hash("123456");
+
+    return user;
   }
+
+  static async giveMeAUserToLogin(): Promise<AuthDto> {
+    const user = new AuthDto();
+    user.email = "janedoe@email.com";
+    user.password =
+      "$argon2id$v=19$m=65536,t=3,p=4$SOjeU543IxEzZe5gEhVzVg$mWo9jd8w65x7JQe/uVLeljXMuD9uXErHSDfR9QHLGXw";
+    return user;
+  }
+
+  static mockedConfigService = {
+    get(key: string) {
+      switch (key) {
+        case "JWT_EXPIRATION_TIME":
+          return "3600";
+      }
+    },
+  };
+
+  static mockedJWTService = {
+    signAsync: () => "",
+  };
 }

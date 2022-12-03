@@ -11,7 +11,7 @@ import { CreateUserDto, UpdateUserDto } from "./dto";
 export class UsersService {
   constructor(private prisma: PrismaService) {}
   async store(dto: CreateUserDto) {
-    const checkUserExists = await this.prisma.user.findFirst({
+    const checkUserExists = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
       },
@@ -26,13 +26,6 @@ export class UsersService {
         name: dto.name,
         email: dto.email,
         password: await argon2.hash(dto.password),
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        createdAt: true,
-        updatedAt: true,
       },
     });
 
