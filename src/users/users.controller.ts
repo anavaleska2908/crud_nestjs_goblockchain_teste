@@ -14,10 +14,10 @@ import {
   ApiOperation,
   ApiResponse,
 } from "@nestjs/swagger";
-import { BadRequestSwagger } from "src/helpers/swagger/badRequest.swagger";
-import { ConflictSwagger } from "src/helpers/swagger/conflict.swagger";
-import { NotFoundSwagger } from "src/helpers/swagger/notFound.swagger";
-import { UnauthorizedSwagger } from "src/helpers/swagger/unauthorized.swagger";
+import { BadRequestSwagger } from "../helpers/swagger/badRequest.swagger";
+import { ConflictSwagger } from "../helpers/swagger/conflict.swagger";
+import { NotFoundSwagger } from "../helpers/swagger/notFound.swagger";
+import { UnauthorizedSwagger } from "../helpers/swagger/unauthorized.swagger";
 import { JwtGuard } from "../auth/guard";
 import { CreateUserDto, RouteUserByIdDto, UpdateUserDto } from "./dto";
 import { IndexUsersSwagger } from "./swagger/indexUsers.swagger";
@@ -42,6 +42,7 @@ export class UsersController {
     status: 400,
     description: "Invalid or missing parameters.",
     type: BadRequestSwagger,
+    isArray: true,
   })
   @ApiResponse({
     status: 409,

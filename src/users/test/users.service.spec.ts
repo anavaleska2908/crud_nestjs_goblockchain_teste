@@ -132,8 +132,7 @@ describe("UserService", () => {
       const user = await TestUtil.giveAMeAValidUser();
       mockUsersService.user.findFirst.mockReturnValue(user);
       mockUsersService.user.delete.mockReturnValue(user);
-      const response = await service.delete({ id });
-      console.log("service", response);
+      await service.delete({ id });
 
       expect(mockUsersService.user.findFirst).toBeCalledTimes(1);
       expect(mockUsersService.user.delete).toBeCalledTimes(1);

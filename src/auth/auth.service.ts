@@ -12,16 +12,16 @@ export class AuthService {
     private jwt: JwtService,
     private config: ConfigService,
   ) {}
-  async login(dto: AuthDto) {
+  async login({ email, password }: AuthDto) {
     const user = await this.prisma.user.findUnique({
       where: {
-        email: dto.email,
+        email,
       },
     });
 
     if (!user) throw new ForbiddenException("Email or password is incorrect.");
 
-    const passwordMatches = await bcryptjs.compare(dto.password, user.password);
+    const passwordMatches = await bcryptjs.compare(password, user.password);
 
     if (!passwordMatches)
       throw new ForbiddenException("Email or password is incorrect.");

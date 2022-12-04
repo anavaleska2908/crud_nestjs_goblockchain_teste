@@ -5,21 +5,8 @@ import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { UsersService } from "../../users/users.service";
 import { TestUtil } from "../../common/test/TestUtil";
-import { AuthDto } from "../dto";
-import { CreateUserDto } from "src/users/dto";
-
-const userCreate: CreateUserDto = {
-  name: "Jane Doe",
-  email: "janedoe@email.com",
-  password: "123456",
-};
-
-const userLogin: AuthDto = {
-  email: "janedoe@email.com",
-  password: "123456",
-};
-
-const userId = "";
+import { APP_GUARD } from "@nestjs/core";
+import { JwtGuard } from "../guard";
 
 const mockUserService = {
   user: {
@@ -38,6 +25,10 @@ describe("LoginService", () => {
       providers: [
         UsersService,
         AuthService,
+        {
+          provide: APP_GUARD,
+          useClass: JwtGuard,
+        },
         {
           provide: PrismaService,
           useValue: mockUserService,
@@ -69,22 +60,14 @@ describe("LoginService", () => {
 
   describe("Login", () => {
     it("Should be able to log in a user", async () => {
-      const user = await TestUtil.giveAMeAValidUser();
-      mockUserService.user.create.mockReturnValue(user);
-      const userCreated = await userService.store(user);
-      console.log("userCreated", userCreated);
+      const userCreate = await TestUtil.giveAMeAValidUser();
+      mockUserService.user.create.mockReturnValue(userCreate);
+      const userCreated = await userService.store(userCreate);
 
-      const userLogin = {
-        email: userCreated.email,
-        password: "123456",
-      };
+      const { email, password } = userCreated;
+      mockUserService.user.findUnique({ email });
 
-      // password= "$argon2id$v=19$m=65536,t=3,p=4$SOjeU543IxEzZe5gEhVzVg$mWo9jd8w65x7JQe/uVLeljXMuD9uXErHSDfR9QHLGXw"
-      const login = await loginService.signToken(
-        "d081490a-45ae-493f-a739-bb4ef86fddec",
-        userCreated.email,
-      );
-      console.log("login", login);
+      const login = await loginService.login({ email, password });
     });
   });
 });
