@@ -8,6 +8,7 @@ import { PrismaModule } from "./prisma/prisma.module";
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath: [".env", ".env.test"],
       isGlobal: true,
     }),
     AuthModule,
