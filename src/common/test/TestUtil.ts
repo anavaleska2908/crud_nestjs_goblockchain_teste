@@ -1,5 +1,5 @@
 import { AuthDto } from "../../auth/dto";
-import * as argon2 from "argon2";
+import * as bcryptjs from "bcryptjs";
 import { CreateUserDto } from "../../users/dto/user.dto";
 
 export class TestUtil {
@@ -7,7 +7,7 @@ export class TestUtil {
     const user = new CreateUserDto();
     user.email = "janedoe@email.com";
     user.name = "Jane Doe";
-    user.password = await argon2.hash("123456");
+    user.password = await bcryptjs.hash("123456", 8);
 
     return user;
   }

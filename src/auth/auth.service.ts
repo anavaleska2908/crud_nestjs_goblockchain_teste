@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
-import * as argon2 from "argon2";
+import * as bcryptjs from "bcryptjs";
 import { PrismaService } from "../prisma/prisma.service";
 import { AuthDto } from "./dto";
 
@@ -18,25 +18,17 @@ export class AuthService {
         email: dto.email,
       },
     });
-    console.log("user", user);
 
     if (!user) throw new ForbiddenException("Email or password is incorrect.");
 
-    const passwordMatches = await argon2.verify(user.password, dto.password);
+    const passwordMatches = await bcryptjs.compare(dto.password, user.password);
 
     if (!passwordMatches)
       throw new ForbiddenException("Email or password is incorrect.");
 
-    return this.signToken(user.id, user.email);
-  }
-
-  async signToken(
-    userId: string,
-    email: string,
-  ): Promise<{ access_token: string }> {
     const payload = {
-      sub: userId,
-      email,
+      sub: user.id,
+      user,
     };
 
     const secret = this.config.get("JWT_SECRET");

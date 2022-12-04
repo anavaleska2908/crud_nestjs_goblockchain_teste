@@ -3,9 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import * as argon2 from "argon2";
+import * as bcryptjs from "bcryptjs";
 import { PrismaService } from "../prisma/prisma.service";
-import { CreateUserDto, UpdateUserDto } from "./dto";
+import { CreateUserDto, RouteUserByIdDto, UpdateUserDto } from "./dto";
 
 @Injectable()
 export class UsersService {
@@ -25,7 +25,7 @@ export class UsersService {
       data: {
         name: dto.name,
         email: dto.email,
-        password: await argon2.hash(dto.password),
+        password: await bcryptjs.hash(dto.password, 8),
       },
     });
 
@@ -38,17 +38,10 @@ export class UsersService {
     return users;
   }
 
-  async show(userId: string) {
+  async show({ id }: RouteUserByIdDto) {
     const user = await this.prisma.user.findFirst({
       where: {
-        id: userId["id"],
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        createdAt: true,
-        updatedAt: true,
+        id,
       },
     });
 
@@ -59,10 +52,10 @@ export class UsersService {
     return user;
   }
 
-  async update(userId: string, dto: UpdateUserDto) {
+  async update({ id }: RouteUserByIdDto, dto: UpdateUserDto) {
     const user = await this.prisma.user.findFirst({
       where: {
-        id: userId["id"],
+        id,
       },
     });
 
@@ -77,22 +70,15 @@ export class UsersService {
       data: {
         ...dto,
       },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        createdAt: true,
-        updatedAt: true,
-      },
     });
 
     return userUpdated;
   }
 
-  async delete(userId: string) {
+  async delete({ id }: RouteUserByIdDto) {
     const user = await this.prisma.user.findFirst({
       where: {
-        id: userId["id"],
+        id,
       },
     });
 
@@ -100,12 +86,10 @@ export class UsersService {
       throw new NotFoundException("User not found");
     }
 
-    await this.prisma.user.delete({
+    return await this.prisma.user.delete({
       where: {
         id: user.id,
       },
     });
-
-    return { msg: "This user has been successfully deleted." };
   }
 }

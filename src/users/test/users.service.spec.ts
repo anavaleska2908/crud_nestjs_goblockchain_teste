@@ -14,6 +14,7 @@ const mockUsersService = {
     delete: jest.fn(),
   },
 };
+const id = "d081490a-45ae-493f-a739-bb4ef86fddec";
 
 describe("UserService", () => {
   let prisma: PrismaService;
@@ -85,9 +86,7 @@ describe("UserService", () => {
     it("Should be able to list a user by id", async () => {
       const user = await TestUtil.giveAMeAValidUser();
       mockUsersService.user.findFirst.mockReturnValue(user);
-      const response = await service.show(
-        "d081490a-45ae-493f-a739-bb4ef86fddec",
-      );
+      const response = await service.show({ id });
 
       expect(response).toMatchObject({ email: user.email });
       expect(mockUsersService.user.findFirst).toHaveBeenCalledTimes(1);
@@ -95,9 +94,7 @@ describe("UserService", () => {
 
     it("Should return a exception when does not find a user", async () => {
       mockUsersService.user.findFirst.mockReturnValue(null);
-      expect(
-        service.show("d081490b-45ae-493f-a739-bb4ef86fddeg"),
-      ).rejects.toBeInstanceOf(NotFoundException);
+      expect(service.show({ id })).rejects.toBeInstanceOf(NotFoundException);
       expect(mockUsersService.user.findFirst).toHaveBeenCalledTimes(1);
     });
   });
@@ -112,7 +109,7 @@ describe("UserService", () => {
         ...updatedUser,
       });
       const response = await service.update(
-        "d081490a-45ae-493f-a739-bb4ef86fddec",
+        { id },
         {
           ...user,
           ...updatedUser,
@@ -125,9 +122,7 @@ describe("UserService", () => {
     });
     it("Should return a exception when does not find a user", async () => {
       mockUsersService.user.findFirst.mockReturnValue(null);
-      expect(
-        service.show("d081490b-45ae-493f-a739-bb4ef86fddeg"),
-      ).rejects.toBeInstanceOf(NotFoundException);
+      expect(service.show({ id })).rejects.toBeInstanceOf(NotFoundException);
       expect(mockUsersService.user.findFirst).toHaveBeenCalledTimes(1);
     });
   });
@@ -137,21 +132,15 @@ describe("UserService", () => {
       const user = await TestUtil.giveAMeAValidUser();
       mockUsersService.user.findFirst.mockReturnValue(user);
       mockUsersService.user.delete.mockReturnValue(user);
-      const response = await service.delete(
-        "d081490a-45ae-493f-a739-bb4ef86fddec",
-      );
+      const response = await service.delete({ id });
       console.log("service", response);
-      expect(response).toEqual({
-        msg: "This user has been successfully deleted.",
-      });
+
       expect(mockUsersService.user.findFirst).toBeCalledTimes(1);
       expect(mockUsersService.user.delete).toBeCalledTimes(1);
     });
     it("Should return a exception when does not find a user", async () => {
       mockUsersService.user.findFirst.mockReturnValue(null);
-      expect(
-        service.show("d081490b-45ae-493f-a739-bb4ef86fddeg"),
-      ).rejects.toBeInstanceOf(NotFoundException);
+      expect(service.show({ id })).rejects.toBeInstanceOf(NotFoundException);
       expect(mockUsersService.user.findFirst).toHaveBeenCalledTimes(1);
     });
   });

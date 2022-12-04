@@ -43,8 +43,6 @@ describe("AppController (e2e)", () => {
     httpServer = app.getHttpServer();
 
     prisma = app.get(PrismaService);
-
-    await prisma.cleanDb();
   });
 
   afterAll(() => {
@@ -63,7 +61,7 @@ describe("AppController (e2e)", () => {
 
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty("id");
-      expect(loginResponse.status).toBe(200);
+      expect(loginResponse.status).toBe(201);
       expect(loginResponse.body).toHaveProperty("access_token");
     });
 

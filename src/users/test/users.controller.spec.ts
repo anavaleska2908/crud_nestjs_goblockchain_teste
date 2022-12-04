@@ -2,7 +2,6 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { UsersService } from "../users.service";
 import { UsersController } from "../users.controller";
 import { TestUtil } from "../../common/test/TestUtil";
-import { userInfo } from "os";
 
 const mockUsersService = {
   store: jest.fn(),
@@ -15,7 +14,7 @@ const mockUsersService = {
 describe("UsersController", () => {
   let controller: UsersController;
   let service: UsersService;
-  const userId = "d081490a-45ae-493f-a739-bb4ef86fddec";
+  const id = "d081490a-45ae-493f-a739-bb4ef86fddec";
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -62,7 +61,7 @@ describe("UsersController", () => {
     it("Should be able to list a user by id", async () => {
       const user = await TestUtil.giveAMeAValidUser();
       mockUsersService.show.mockReturnValue(user);
-      const response = await controller.show(userId);
+      const response = await controller.show({ id });
 
       expect(response).toEqual(user);
       expect(response).toMatchObject({ email: user.email });
@@ -74,7 +73,7 @@ describe("UsersController", () => {
     it("Should be able to update a user", async () => {
       const user = await TestUtil.giveAMeAValidUser();
       mockUsersService.update.mockReturnValue(user);
-      const response = await controller.update(userId, user);
+      const response = await controller.update({ id }, user);
 
       expect(response).toEqual(user);
       expect(response).toMatchObject({ email: user.email });
@@ -84,16 +83,8 @@ describe("UsersController", () => {
 
   describe("DeleteUser", () => {
     it("Should be able to delete a user", async () => {
-      // const user = TestUtil.giveAMeAValidUser();
-      mockUsersService.delete.mockReturnValue(userId);
-      const response = await controller.delete(
-        "d081490a-45ae-493f-a739-bb4ef86fddec",
-      );
-      console.log(response);
+      await controller.delete({ id });
 
-      // expect(response).toEqual({
-      //   msg: "This user has been successfully deleted.",
-      // });
       expect(mockUsersService.delete).toHaveBeenCalledTimes(1);
     });
   });

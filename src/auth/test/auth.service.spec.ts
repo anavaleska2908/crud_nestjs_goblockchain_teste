@@ -5,7 +5,6 @@ import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { UsersService } from "../../users/users.service";
 import { TestUtil } from "../../common/test/TestUtil";
-import * as argon2 from "argon2";
 import { AuthDto } from "../dto";
 import { CreateUserDto } from "src/users/dto";
 
